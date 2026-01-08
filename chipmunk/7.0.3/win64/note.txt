@@ -1,0 +1,2 @@
+win64 static lib.
+no different headers, use the headers (inc/) from the win32 release from this repository
