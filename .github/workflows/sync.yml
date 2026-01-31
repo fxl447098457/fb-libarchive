@@ -1,0 +1,27 @@
+name: Sync from Codeberg
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # 每周日检查一次，或根据需要调整
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}  # 需要 Personal Access Token
+
+      - name: Add Codeberg remote and fetch
+        run: |
+          git remote add codeberg https://codeberg.org/username/repo.git
+          git fetch codeberg
+
+      - name: Sync to GitHub
+        run: |
+          git checkout main
+          git merge codeberg/main --allow-unrelated-histories || true
+          git push origin main
